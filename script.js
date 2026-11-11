@@ -120,19 +120,32 @@ async function cargarProductosCMS() {
       article.setAttribute('data-description', prod.descripcion || '');
 
       article.innerHTML = `
-        <button class="producto-detalle" type="button" aria-label="Ver detalles de ${tituloProducto}" onclick="abrirModal('${tituloProducto}', '$${precioProducto}', '${imagenUrl}', '${prod.descripcion || ''}')">
+        <button class="producto-detalle" type="button" aria-label="Ver detalles de ${tituloProducto}">
           <img src="${imagenUrl}" alt="${tituloProducto}">
           <span>${tituloProducto}</span>
         </button>
         <p class="precio">$${precioProducto}</p>
         <button class="estado-stock" type="button">${textoStock}</button>
       `;
+
+      // Event listener directo para abrir el modal al hacer clic en el boton del producto
+      const btnDetalle = article.querySelector('.producto-detalle');
+      btnDetalle.addEventListener('click', () => {
+        if (typeof abrirModal === 'function') {
+          abrirModal(tituloProducto, `$${precioProducto}`, imagenUrl, prod.descripcion || 'Sin descripción disponible.');
+        } else if (typeof mostrarDetalle === 'function') {
+          mostrarDetalle(article);
+        }
+      });
+
       container.appendChild(article);
     }
   } catch (error) {
     console.error('Error al cargar productos dinámicos:', error);
   }
 }
+
+document.addEventListener('DOMContentLoaded', cargarProductosCMS);
 
 document.addEventListener('DOMContentLoaded', cargarProductosCMS);
 
