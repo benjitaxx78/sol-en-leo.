@@ -84,47 +84,56 @@ async function cargarProductosCMS() {
   if (!container) return;
 
   try {
-    // 1. Decap CMS genera los nombres de archivo basados en los slugs o títulos.
-    // Si tenés una lista de productos o querés probar cargando los archivos:
-    // Reemplazá este array con los nombres de tus archivos .md guardados en contenido/productos
-    const archivosProductos = [
-      'banana.md' // Poné acá el nombre exacto de tu archivo .md en GitHub
-    ];
+    const resLista = await fetch('https://api.github.com/repos/benjitaxx78/sol-en-leo./contents/contenido/productos');
+    const archivos = await resLista.json();
 
     container.innerHTML = ''; 
 
-    for (const nombreArchivo of archivosProductos) {
-      const res = await fetch(`/contenido/productos/${nombreArchivo}`);
+    for (const item of archivos) {
+      if (!item.name.endsWith('.md')) continue;
+
+      const res = await fetch(`/contenido/productos/${item.name}`);
       if (!res.ok) continue;
       
       const textoMarkdown = await res.text();
-
-      // Extraer el frontmatter (los datos entre --- y ---)
       const partes = textoMarkdown.split('---');
       if (partes.length < 3) continue;
 
-      const datosYAML = partes[1];
-      const prod = jsyaml.load(datosYAML); // Convierte el YAML a objeto JavaScript
+      const prod = jsyaml.load(partes[1]);
+      
+      const tituloProducto = prod.title || 'Producto sin título';
+      const precioProducto = prod.precio ? prod.precio.toString().replace('$', '') : '0';
+      
+      let imagenUrl = prod.imagen || '';
+      if (imagenUrl.startsWith('/')) {
+        imagenUrl = imagenUrl.substring(1);
+      }
+
+      let textoStock = 'En stock';
+      if (prod.stock === 'no') textoStock = 'Sin stock';
+      if (prod.stock === 'consultar') textoStock = 'Consultar stock';
 
       const article = document.createElement('article');
       article.classList.add('producto');
-      article.setAttribute('data-price', `$${prod.precio}`);
-      article.setAttribute('data-stock', prod.stock);
+      article.setAttribute('data-price', `$${precioProducto}`);
+      article.setAttribute('data-stock', prod.stock || 'si');
       article.setAttribute('data-description', prod.descripcion || '');
 
       article.innerHTML = `
-        <button class="producto-detalle" type="button" aria-label="Ver detalles de ${prod.titulo}" onclick="abrirModal('${prod.titulo}', '$${prod.precio}', '${prod.imagen}', '${prod.descripcion || ''}')">
-          <img src="${prod.imagen}" alt="${prod.titulo}">
-          <span>${prod.titulo}</span>
+        <button class="producto-detalle" type="button" aria-label="Ver detalles de ${tituloProducto}" onclick="abrirModal('${tituloProducto}', '$${precioProducto}', '${imagenUrl}', '${prod.descripcion || ''}')">
+          <img src="${imagenUrl}" alt="${tituloProducto}">
+          <span>${tituloProducto}</span>
         </button>
-        <p class="precio">$${prod.precio}</p>
-        <button class="estado-stock" type="button">Consultar stock</button>
+        <p class="precio">$${precioProducto}</p>
+        <button class="estado-stock" type="button">${textoStock}</button>
       `;
       container.appendChild(article);
     }
   } catch (error) {
-    console.error('Error al cargar productos desde archivos .md:', error);
+    console.error('Error al cargar productos dinámicos:', error);
   }
 }
+
+document.addEventListener('DOMContentLoaded', cargarProductosCMS);
 
 document.addEventListener('DOMContentLoaded', cargarProductosCMS);
