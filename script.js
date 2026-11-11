@@ -1,83 +1,77 @@
 const botonMenu = document.querySelector(".boton-menu");
 const opcionesMenu = document.querySelector("#opciones-menu");
 
-botonMenu.addEventListener("click", () => {
+if (botonMenu && opcionesMenu) {
+  botonMenu.addEventListener("click", () => {
     const menuAbierto = botonMenu.getAttribute("aria-expanded") === "true";
     botonMenu.setAttribute("aria-expanded", String(!menuAbierto));
     botonMenu.setAttribute("aria-label", menuAbierto ? "Abrir menú" : "Cerrar menú");
     opcionesMenu.hidden = menuAbierto;
-});
+  });
 
-opcionesMenu.addEventListener("click", (evento) => {
+  opcionesMenu.addEventListener("click", (evento) => {
     if (evento.target.closest("a")) {
-        opcionesMenu.hidden = true;
-        botonMenu.setAttribute("aria-expanded", "false");
-        botonMenu.setAttribute("aria-label", "Abrir menú");
+      opcionesMenu.hidden = true;
+      botonMenu.setAttribute("aria-expanded", "false");
+      botonMenu.setAttribute("aria-label", "Abrir menú");
     }
-});
+  });
 
-document.addEventListener("keydown", (evento) => {
+  document.addEventListener("keydown", (evento) => {
     if (evento.key === "Escape" && !opcionesMenu.hidden) {
-        opcionesMenu.hidden = true;
-        botonMenu.setAttribute("aria-expanded", "false");
-        botonMenu.setAttribute("aria-label", "Abrir menú");
-        botonMenu.focus();
+      opcionesMenu.hidden = true;
+      botonMenu.setAttribute("aria-expanded", "false");
+      botonMenu.setAttribute("aria-label", "Abrir menú");
+      botonMenu.focus();
     }
-});
+  });
+}
 
+// Configuración del modal de productos
 const modalProducto = document.querySelector("#detalle-producto");
-const botonCerrarModal = modalProducto.querySelector(".cerrar-modal");
-const nombreModal = modalProducto.querySelector("#detalle-nombre");
-const imagenModal = modalProducto.querySelector(".imagen-modal");
-const precioModal = modalProducto.querySelector(".precio-modal");
-const stockModal = modalProducto.querySelector(".stock-modal");
-const descripcionModal = modalProducto.querySelector(".descripcion-modal");
+const botonCerrarModal = modalProducto ? modalProducto.querySelector(".cerrar-modal") : null;
+const nombreModal = modalProducto ? modalProducto.querySelector("#detalle-nombre") : null;
+const imagenModal = modalProducto ? modalProducto.querySelector(".imagen-modal") : null;
+const precioModal = modalProducto ? modalProducto.querySelector(".precio-modal") : null;
+const stockModal = modalProducto ? modalProducto.querySelector(".stock-modal") : null;
+const descripcionModal = modalProducto ? modalProducto.querySelector(".descripcion-modal") : null;
 
-document.querySelectorAll(".producto").forEach((producto) => {
-    const botonStock = producto.querySelector(".estado-stock");
-    const stockInformado = (producto.dataset.stock || "").trim().toLowerCase();
-    const stock = ["si", "sí", "en stock", "stock disponible", "disponible"].includes(stockInformado)
-        ? "si"
-        : ["no", "sin stock", "agotado", "agotada"].includes(stockInformado)
-            ? "no"
-            : "consultar";
-    const precioTarjeta = producto.querySelector(".precio");
-    const precio = (producto.dataset.price || "").trim() || "Consultar precio";
-    const etiquetasStock = {
-        si: "En stock",
-        no: "Sin stock",
-        consultar: "Consultar stock",
-    };
-
-    precioTarjeta.textContent = precio;
-
-    botonStock.dataset.stock = stock;
-    botonStock.textContent = etiquetasStock[stock] || etiquetasStock.consultar;
-    botonStock.setAttribute("aria-label", `${botonStock.textContent}: ver detalles del producto`);
-
-    const abrirDetalle = () => {
-        const botonDetalle = producto.querySelector(".producto-detalle");
-        const nombre = botonDetalle.querySelector("span").textContent.trim();
-
-        nombreModal.textContent = nombre;
-        imagenModal.src = botonDetalle.querySelector("img").src;
-        imagenModal.alt = nombre;
-        precioModal.textContent = `Precio: ${producto.dataset.price || "Consultar precio"}`;
-        stockModal.textContent = `Disponibilidad: ${etiquetasStock[stock] || etiquetasStock.consultar}`;
-        descripcionModal.textContent = producto.dataset.description || "Descripción pendiente de completar.";
-        modalProducto.showModal();
-    };
-
-    producto.querySelector(".producto-detalle").addEventListener("click", abrirDetalle);
-    botonStock.addEventListener("click", abrirDetalle);
-});
-
-botonCerrarModal.addEventListener("click", () => modalProducto.close());
-modalProducto.addEventListener("click", (evento) => {
+if (modalProducto && botonCerrarModal) {
+  botonCerrarModal.addEventListener("click", () => modalProducto.close());
+  modalProducto.addEventListener("click", (evento) => {
     if (evento.target === modalProducto) {
-        modalProducto.close();
+      modalProducto.close();
     }
-});
+  });
+}
+
+// Función global para abrir el modal desde cualquier tarjeta
+function abrirModalProducto(nombre, precio, imagen, stockRaw, descripcion) {
+  if (!modalProducto) return;
+
+  const stockInformado = (stockRaw || "").trim().toLowerCase();
+  const stockKey = ["si", "sí", "en stock", "stock disponible", "disponible"].includes(stockInformado)
+    ? "si"
+    : ["no", "sin stock", "agotado", "agotada"].includes(stockInformado)
+      ? "no"
+      : "consultar";
+
+  const etiquetasStock = {
+    si: "En stock",
+    no: "Sin stock",
+    consultar: "Consultar stock",
+  };
+
+  nombreModal.textContent = nombre;
+  imagenModal.src = imagen;
+  imagenModal.alt = nombre;
+  precioModal.textContent = `Precio: ${precio}`;
+  stockModal.textContent = `Disponibilidad: ${etiquetasStock[stockKey]}`;
+  descripcionModal.textContent = descripcion || "Descripción pendiente de completar.";
+
+  modalProducto.showModal();
+}
+
 // Cargar productos creados en Decap CMS desde archivos .md
 async function cargarProductosCMS() {
   const container = document.getElementById('lista-productos');
@@ -102,21 +96,22 @@ async function cargarProductosCMS() {
       const prod = jsyaml.load(partes[1]);
       
       const tituloProducto = prod.title || 'Producto sin título';
-      const precioProducto = prod.precio ? prod.precio.toString().replace('$', '') : '0';
+      const precioFormateado = prod.precio ? `$${prod.precio.toString().replace('$', '')}` : 'Consultar precio';
       
       let imagenUrl = prod.imagen || '';
       if (imagenUrl.startsWith('/')) {
         imagenUrl = imagenUrl.substring(1);
       }
 
+      const stockRaw = prod.stock || 'si';
       let textoStock = 'En stock';
-      if (prod.stock === 'no') textoStock = 'Sin stock';
-      if (prod.stock === 'consultar') textoStock = 'Consultar stock';
+      if (stockRaw === 'no') textoStock = 'Sin stock';
+      if (stockRaw === 'consultar') textoStock = 'Consultar stock';
 
       const article = document.createElement('article');
       article.classList.add('producto');
-      article.setAttribute('data-price', `$${precioProducto}`);
-      article.setAttribute('data-stock', prod.stock || 'si');
+      article.setAttribute('data-price', precioFormateado);
+      article.setAttribute('data-stock', stockRaw);
       article.setAttribute('data-description', prod.descripcion || '');
 
       article.innerHTML = `
@@ -124,19 +119,22 @@ async function cargarProductosCMS() {
           <img src="${imagenUrl}" alt="${tituloProducto}">
           <span>${tituloProducto}</span>
         </button>
-        <p class="precio">$${precioProducto}</p>
+        <p class="precio">${precioFormateado}</p>
         <button class="estado-stock" type="button">${textoStock}</button>
       `;
 
-      // Event listener directo para abrir el modal al hacer clic en el boton del producto
-      const btnDetalle = article.querySelector('.producto-detalle');
-      btnDetalle.addEventListener('click', () => {
-        if (typeof abrirModal === 'function') {
-          abrirModal(tituloProducto, `$${precioProducto}`, imagenUrl, prod.descripcion || 'Sin descripción disponible.');
-        } else if (typeof mostrarDetalle === 'function') {
-          mostrarDetalle(article);
-        }
-      });
+      const abrirDetalle = () => {
+        abrirModalProducto(
+          tituloProducto,
+          precioFormateado,
+          imagenUrl,
+          stockRaw,
+          prod.descripcion
+        );
+      };
+
+      article.querySelector('.producto-detalle').addEventListener('click', abrirDetalle);
+      article.querySelector('.estado-stock').addEventListener('click', abrirDetalle);
 
       container.appendChild(article);
     }
@@ -144,9 +142,5 @@ async function cargarProductosCMS() {
     console.error('Error al cargar productos dinámicos:', error);
   }
 }
-
-document.addEventListener('DOMContentLoaded', cargarProductosCMS);
-
-document.addEventListener('DOMContentLoaded', cargarProductosCMS);
 
 document.addEventListener('DOMContentLoaded', cargarProductosCMS);
