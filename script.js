@@ -78,3 +78,53 @@ modalProducto.addEventListener("click", (evento) => {
         modalProducto.close();
     }
 });
+// Cargar productos creados en Decap CMS desde archivos .md
+async function cargarProductosCMS() {
+  const container = document.getElementById('lista-productos');
+  if (!container) return;
+
+  try {
+    // 1. Decap CMS genera los nombres de archivo basados en los slugs o títulos.
+    // Si tenés una lista de productos o querés probar cargando los archivos:
+    // Reemplazá este array con los nombres de tus archivos .md guardados en contenido/productos
+    const archivosProductos = [
+      'banana.md' // Poné acá el nombre exacto de tu archivo .md en GitHub
+    ];
+
+    container.innerHTML = ''; 
+
+    for (const nombreArchivo of archivosProductos) {
+      const res = await fetch(`/contenido/productos/${nombreArchivo}`);
+      if (!res.ok) continue;
+      
+      const textoMarkdown = await res.text();
+
+      // Extraer el frontmatter (los datos entre --- y ---)
+      const partes = textoMarkdown.split('---');
+      if (partes.length < 3) continue;
+
+      const datosYAML = partes[1];
+      const prod = jsyaml.load(datosYAML); // Convierte el YAML a objeto JavaScript
+
+      const article = document.createElement('article');
+      article.classList.add('producto');
+      article.setAttribute('data-price', `$${prod.precio}`);
+      article.setAttribute('data-stock', prod.stock);
+      article.setAttribute('data-description', prod.descripcion || '');
+
+      article.innerHTML = `
+        <button class="producto-detalle" type="button" aria-label="Ver detalles de ${prod.titulo}" onclick="abrirModal('${prod.titulo}', '$${prod.precio}', '${prod.imagen}', '${prod.descripcion || ''}')">
+          <img src="${prod.imagen}" alt="${prod.titulo}">
+          <span>${prod.titulo}</span>
+        </button>
+        <p class="precio">$${prod.precio}</p>
+        <button class="estado-stock" type="button">Consultar stock</button>
+      `;
+      container.appendChild(article);
+    }
+  } catch (error) {
+    console.error('Error al cargar productos desde archivos .md:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', cargarProductosCMS);
