@@ -1,0 +1,27 @@
+backend:
+  name: git-gateway
+  branch: main # O "master", según cómo se llame la rama principal de tu GitHub
+
+# Dónde se guardan las imágenes cargadas desde el panel
+media_folder: "uploads"
+public_folder: "/uploads"
+
+# Colecciones de contenido (los datos que maneja tu familiar)
+collections:
+  - name: "productos"
+    label: "Productos"
+    folder: "contenido/productos" # Carpeta donde se guardará un archivo por cada producto
+    create: true # Permite crear productos nuevos
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nombre del Producto", name: "title", widget: "string" }
+      - { label: "Precio", name: "precio", widget: "string", default: "$0" }
+      - { 
+          label: "Stock", 
+          name: "stock", 
+          widget: "select", 
+          options: ["si", "no", "consultar"],
+          default: "si"
+        }
+      - { label: "Imagen del Producto", name: "imagen", widget: "image" }
+      - { label: "Descripción", name: "descripcion", widget: "text" }

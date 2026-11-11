@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sol en leo.</title>
+    <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+    <header>
+        <nav class="menu-principal">
+            <a href="#inicio" class="logo-boton">
+                <img src="img/logo.png" alt="boton de inicio">
+            </a>
+            <div class="acciones-nav">
+                <a class="boton-carrito" href="#carrito" aria-label="Ir al carrito de compras">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M5 8h14l1 13H4L5 8Z"></path>
+                        <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+                    </svg>
+                </a>
+                <button class="boton-menu" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="opciones-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <ul id="opciones-menu" hidden>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#historia">Un poco de la marca</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="inicio">
+        <h1>sol en leo.</h1>
+        <h3>Hecho a Cuero</h3>
+    </section>
+    <section id="productos">
+        <h2>Nuestros Productos</h2>
+        <div class="productos-carrusel">
+            <div class="contenedor-productos" id="lista-productos">
+                <article class="producto" data-price="$45.000" data-stock="si" data-description="Descripción pendiente de completar.">
+                    <button class="producto-detalle" type="button" aria-label="Ver detalles de Porta notebook JUSTINA">
+                        <img src="img/IMG_4426.png" alt="Porta notebook JUSTINA">
+                        <span>Porta notebook JUSTINA</span>
+                    </button>
+                    <p class="precio"></p>
+                    <button class="estado-stock" type="button">Consultar stock</button>
+                </article>
+                <article class="producto" data-price="$35.000" data-stock="si" data-description="Descripción pendiente de completar.">
+                    <button class="producto-detalle" type="button" aria-label="Ver detalles de Tabaquera VORÁGINE">
+                        <img src="img/IMG_4427.png" alt="Tabaquera VORÁGINE">
+                        <span>Tabaquera VORÁGINE</span>
+                    </button>
+                    <p class="precio"></p>
+                    <button class="estado-stock" type="button">Consultar stock</button>
+                </article>
+                <article class="producto" data-price="$8.000" data-stock="si" data-description="Descripción pendiente de completar.">
+                    <button class="producto-detalle" type="button" aria-label="Ver detalles de Porta Encendedores">
+                        <img src="img/IMG_4429.PNG" alt="Porta Encendedores">
+                        <span>Porta Encendedores</span>
+                    </button>
+                    <p class="precio"></p>
+                    <button class="estado-stock" type="button">Consultar stock</button>
+                </article>
+                <article class="producto" data-price="$29.000" data-stock="si" data-description="Descripción pendiente de completar.">
+                    <button class="producto-detalle" type="button" aria-label="Ver detalles de Midori">
+                        <img src="img/IMG_4554.PNG" alt="Midori">
+                        <span>Midori</span>
+                    </button>
+                    <p class="precio"></p>
+                    <button class="estado-stock" type="button">Consultar stock</button>
+                </article>
+                <article class="producto" data-price="$35.000" data-stock="si" data-description="Tabaquera hecha a mano con materiales de alta calidad.">
+                    <button class="producto-detalle" type="button" aria-label="Ver detalles de Tabaquera OLIVA">
+                        <img src="img/IMG_4677.JPG.jpeg" alt="Tabaquera OLIVA">
+                        <span>Tabaquera OLIVA</span>
+                    </button>
+                    <p class="precio"></p>
+                    <button class="estado-stock" type="button">Consultar stock</button>
+                </article>
+            </div>
+        </div>
+    </section>
+    <footer class="pie-pagina">
+        <div class="bloque-footer">
+            <h2>Sobre Sol en Leo</h2>
+            <p>Accesorios de cuero con diseño y detalles pensados para acompañarte todos los días.</p>
+        </div>
+        <div class="bloque-footer">
+            <h2>Nuestros productos</h2>
+            <p>Porta notebooks, tabaqueras y otros accesorios hechos en cuero.</p>
+            <a href="#productos">Ver productos</a>
+        </div>
+        <div class="bloque-footer">
+            <h2>Consultas</h2>
+            <p>Abrí la ficha de un producto para conocer su descripción, precio y disponibilidad.</p>
+        </div>
+    </footer>
+    <dialog class="modal-producto" id="detalle-producto" aria-labelledby="detalle-nombre">
+        <div class="contenido-modal">
+            <button class="cerrar-modal" type="button" aria-label="Cerrar detalles">×</button>
+            <img class="imagen-modal" src="" alt="">
+            <div class="informacion-modal">
+                <h2 id="detalle-nombre"></h2>
+                <p class="precio-modal"></p>
+                <p class="stock-modal"></p>
+                <p class="descripcion-modal"></p>
+            </div>
+        </div>
+    </dialog>
+<script src="script.js?v=5"></script>
+</body>
+</html>
