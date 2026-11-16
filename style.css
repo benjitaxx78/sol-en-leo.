@@ -115,7 +115,9 @@ header {
     text-decoration: none;
 }
 body {
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #fff7ec;
     background-color: #52110c;
     margin: 0;
     display: flex;
@@ -124,15 +126,41 @@ body {
     align-items: center;
     gap: 20px;
 }
+#inicio {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 16px;
+    text-align: center;
+    h3 {
+        font-family: 'Great Vibes', cursive;
+        color: #f0d7ca;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+    }
+}
+#inicio h1,
+#inicio h3 {
+    margin: 0;
+}
+#inicio h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+}
 #productos {
     width: 100%;
+}
+#productos h2 {
+    margin-left: 24px;
 }
 .contenedor-productos {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    justify-items: center;
-    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: stretch;
+    gap: 16px;
     padding: 18px 12px;
 }
 .productos-carrusel {
@@ -140,13 +168,12 @@ body {
 }
 .producto {
     width: 100%;
-    max-width: 300px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-height: 465px;
-    text-align: center;
-    padding: 12px 10px 14px;
+    align-items: stretch;
+    min-height: 0;
+    text-align: left;
+    padding: 12px 0 14px;
     background: transparent;
     color: #fff7ec;
 }
@@ -164,20 +191,21 @@ body {
 .producto-detalle img {
     display: block;
     width: 100%;
-    height: 270px;
-    object-fit: contain;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
 }
 .producto-detalle span {
     display: flex;
     width: 100%;
-    min-height: 66px;
+    min-height: 36px;
     align-items: center;
     justify-content: flex-start;
-    padding: 6px 0;
+    padding: 6px 0 2px;
     color: #e8c5b8;
-    font-size: 0.92rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.025em;
+    letter-spacing: normal;
     text-align: left;
 }
 .producto-detalle:focus-visible,
@@ -188,23 +216,23 @@ body {
 }
 .precio {
     width: 100%;
-    margin: 4px 0 6px;
+    margin: 2px 0 3px;
     color: #f0d7ca;
-    font-size: 0.92rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: normal;
     text-align: left;
 }
 .estado-stock {
     width: 100%;
     border: 0;
-    padding: 3px 0;
+    padding: 2px 0;
     background: transparent;
     color: #c98e80;
     font: inherit;
-    font-size: 0.78rem;
+    font-size: 0.625rem;
     font-weight: 400;
-    letter-spacing: 0.04em;
+    letter-spacing: normal;
     cursor: pointer;
     text-align: left;
 }
@@ -337,28 +365,26 @@ body {
     h1 {
         font-size: clamp(2rem, 10vw, 3rem);
     }
+    #inicio h3 {
+        font-size: 1.2rem;
+    }
+    #productos h2 {
+        margin-left: 0;
+    }
     .contenedor-productos {
         min-width: 0;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 8px;
-        padding: 16px 4px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        padding: 12px 4px;
     }
     .producto {
-        min-height: 260px;
-        padding: 10px 4px 12px;
+        padding: 8px 0 12px;
     }
     .producto-detalle img {
-        height: 130px;
+        aspect-ratio: 2 / 3;
     }
     .producto-detalle span {
-        min-height: 40px;
-        font-size: 0.78rem;
-    }
-    .precio {
-        font-size: 0.9rem;
-    }
-    .estado-stock {
-        font-size: 0.72rem;
+        min-height: 32px;
     }
     .contenido-modal {
         grid-template-columns: 1fr;
