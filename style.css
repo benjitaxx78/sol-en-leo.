@@ -115,7 +115,7 @@ header {
     text-decoration: none;
 }
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background-color: #52110c;
     margin: 0;
     display: flex;
@@ -147,17 +147,8 @@ body {
     min-height: 465px;
     text-align: center;
     padding: 12px 10px 14px;
-    border: 1px solid rgba(255, 247, 236, 0.2);
-    border-radius: 16px;
-    background: linear-gradient(160deg, #681c16, #49100c);
+    background: transparent;
     color: #fff7ec;
-    box-shadow: 0 8px 20px rgba(28, 5, 3, 0.2);
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-}
-.producto:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 247, 236, 0.42);
-    box-shadow: 0 12px 24px rgba(28, 5, 3, 0.3);
 }
 .producto-detalle {
     display: flex;
@@ -178,14 +169,16 @@ body {
 }
 .producto-detalle span {
     display: flex;
+    width: 100%;
     min-height: 66px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 6px 0;
     color: #e8c5b8;
     font-size: 0.92rem;
     font-weight: 500;
     letter-spacing: 0.025em;
+    text-align: left;
 }
 .producto-detalle:focus-visible,
 .estado-stock:focus-visible,
