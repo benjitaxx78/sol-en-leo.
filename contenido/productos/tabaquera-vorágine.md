@@ -2,6 +2,6 @@
 title: Tabaquera VORÁGINE
 precio: $35.000
 stock: si
-imagen: /uploads/img_4427.png
+imagen: /uploads/tamaño-ajustado.png
 descripcion: EAAAA
 ---
