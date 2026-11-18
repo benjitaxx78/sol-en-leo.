@@ -258,6 +258,27 @@ body {
     align-items: flex-start;
     gap: 7px;
 }
+.redes-sociales {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+}
+.redes-sociales a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #d7a69a;
+}
+.redes-sociales svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
 .bloque-footer h2 {
     color: #f0d7ca;
     font-size: 1rem;
