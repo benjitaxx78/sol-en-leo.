@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Alex+Brush&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800;900&family=Cinzel:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-yaml/dist/js-yaml.min.js"></script>
 </head>
@@ -19,11 +19,12 @@
                 <img src="img/logo.png" alt="boton de inicio">
             </a>
             <div class="acciones-nav">
-                <a class="boton-carrito" href="#carrito" aria-label="Ir al carrito de compras">
+                <a class="boton-carrito" href="#carrito" aria-label="Abrir carrito, 0 productos">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M5 8h14l1 13H4L5 8Z"></path>
                         <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
                     </svg>
+                    <span class="contador-carrito" id="contador-carrito" aria-live="polite">0</span>
                 </a>
                 <button class="boton-menu" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="opciones-menu">
                     <span></span>
@@ -87,6 +88,20 @@
             </div>
         </div>
     </dialog>
-<script src="script.js?v=5"></script>
+    <dialog class="modal-carrito" id="carrito" aria-labelledby="titulo-carrito">
+        <div class="contenido-carrito">
+            <div class="encabezado-carrito">
+                <h2 id="titulo-carrito">Tu carrito</h2>
+                <button class="cerrar-carrito" type="button" aria-label="Cerrar carrito">×</button>
+            </div>
+            <p class="carrito-vacio" id="carrito-vacio">Todavía no agregaste productos.</p>
+            <ul class="lista-carrito" id="lista-carrito"></ul>
+            <div class="pie-carrito">
+                <span>Total</span>
+                <strong id="total-carrito">$0</strong>
+            </div>
+        </div>
+    </dialog>
+<script src="script.js?v=6"></script>
 </body>
 </html>
