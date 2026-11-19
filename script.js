@@ -36,7 +36,10 @@ const precioModal = modalProducto ? modalProducto.querySelector(".precio-modal")
 const stockModal = modalProducto ? modalProducto.querySelector(".stock-modal") : null;
 const descripcionModal = modalProducto ? modalProducto.querySelector(".descripcion-modal") : null;
 
-const carrito = new Map();
+// Cargar carrito desde localStorage
+const datosGuardados = localStorage.getItem("sol_en_leo_carrito");
+const carrito = new Map(datosGuardados ? JSON.parse(datosGuardados) : []);
+
 const botonCarrito = document.querySelector(".boton-carrito");
 const contadorCarrito = document.querySelector("#contador-carrito");
 const modalCarrito = document.querySelector("#carrito");
@@ -44,6 +47,8 @@ const botonCerrarCarrito = modalCarrito ? modalCarrito.querySelector(".cerrar-ca
 const listaCarrito = modalCarrito ? modalCarrito.querySelector("#lista-carrito") : null;
 const carritoVacio = modalCarrito ? modalCarrito.querySelector("#carrito-vacio") : null;
 const totalCarrito = modalCarrito ? modalCarrito.querySelector("#total-carrito") : null;
+const btnComprarMP = modalCarrito ? modalCarrito.querySelector("#btn-comprar-mp") : null;
+const btnComprarEfectivo = modalCarrito ? modalCarrito.querySelector("#btn-comprar-efectivo") : null;
 
 const formatoMoneda = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -58,6 +63,10 @@ function formatearPrecio(precio) {
 function obtenerPrecioNumerico(precio) {
   const digitos = String(precio ?? "").replace(/\D/g, "");
   return digitos ? Number(digitos) : null;
+}
+
+function guardarCarrito() {
+  localStorage.setItem("sol_en_leo_carrito", JSON.stringify([...carrito]));
 }
 
 function renderizarCarrito() {
@@ -113,6 +122,12 @@ function renderizarCarrito() {
   botonCarrito.setAttribute("aria-label", `Abrir carrito, ${cantidadTotal} productos`);
   carritoVacio.hidden = cantidadTotal > 0;
   totalCarrito.textContent = formatearPrecio(precioTotal);
+
+  const carritoTieneItems = cantidadTotal > 0;
+  if (btnComprarMP) btnComprarMP.disabled = !carritoTieneItems;
+  if (btnComprarEfectivo) btnComprarEfectivo.disabled = !carritoTieneItems;
+
+  guardarCarrito();
 }
 
 function agregarAlCarrito(producto) {
@@ -158,6 +173,99 @@ if (listaCarrito) {
   });
 }
 
+// Acción: Pagar en Efectivo o Transferencia vía WhatsApp
+if (btnComprarEfectivo) {
+  btnComprarEfectivo.addEventListener("click", () => {
+    if (carrito.size === 0) return;
+
+    let mensaje = "¡Hola! Quiero hacer el siguiente pedido para pagar en *EFECTIVO / TRANSFERENCIA*:\n\n";
+    let precioTotal = 0;
+
+    for (const [_, prod] of carrito) {
+      const subtotal = prod.precio * prod.cantidad;
+      precioTotal += subtotal;
+      mensaje += `• ${prod.cantidad}x ${prod.nombre} (${formatearPrecio(subtotal)})\n`;
+    }
+
+    mensaje += `\n*Total a abonar: ${formatearPrecio(precioTotal)}*\n¿Cómo coordinamos el retiro o la entrega?`;
+
+    const numeroTelefono = "5493425994955";
+    const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
+
+    window.open(urlWhatsApp, "_blank");
+  });
+}
+
+// Acción: Pagar con Mercado Pago
+if (btnComprarMP) {
+  btnComprarMP.addEventListener("click", async () => {
+    if (carrito.size === 0) return;
+
+    btnComprarMP.disabled = true;
+    const textoOriginal = btnComprarMP.textContent;
+    btnComprarMP.textContent = "Cargando Mercado Pago...";
+
+    try {
+      const items = Array.from(carrito.values()).map((p) => ({
+        nombre: p.nombre,
+        precio: p.precio,
+        cantidad: p.cantidad,
+      }));
+
+      localStorage.setItem("sol_en_leo_orden_pendiente", JSON.stringify(items));
+
+      const res = await fetch("/.netlify/functions/create-preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudo iniciar el pago");
+
+      window.location.href = data.init_point;
+    } catch (err) {
+      alert(`Error al procesar el pago: ${err.message}`);
+      btnComprarMP.disabled = false;
+      btnComprarMP.textContent = textoOriginal;
+    }
+  });
+}
+
+// Verificar si el comprador regresa tras pagar exitosamente en Mercado Pago
+function verificarEstadoPago() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const estadoPago = urlParams.get("pago");
+
+  if (estadoPago === "exito") {
+    const ordenPendiente = JSON.parse(localStorage.getItem("sol_en_leo_orden_pendiente") || "[]");
+
+    carrito.clear();
+    localStorage.removeItem("sol_en_leo_carrito");
+    renderizarCarrito();
+
+    let mensajeWA = "Hola Buenas! pagué ";
+    let totalMonto = 0;
+    let listaProductosStr = "";
+
+    ordenPendiente.forEach((prod) => {
+      totalMonto += prod.precio * prod.cantidad;
+      listaProductosStr += `\n• ${prod.nombre}${prod.cantidad > 1 ? ` (x${prod.cantidad})` : ""}`;
+    });
+
+    mensajeWA += `${formatearPrecio(totalMonto)} por:${listaProductosStr}`;
+
+    const numeroTelefono = "5493425994955";
+    const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensajeWA)}`;
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+    localStorage.removeItem("sol_en_leo_orden_pendiente");
+
+    alert("¡Pago aprobado con éxito! Te redirigimos a WhatsApp para coordinar el envío.");
+    window.location.href = urlWhatsApp;
+  }
+}
+
 if (modalProducto && botonCerrarModal) {
   botonCerrarModal.addEventListener("click", () => modalProducto.close());
   modalProducto.addEventListener("click", (evento) => {
@@ -167,7 +275,6 @@ if (modalProducto && botonCerrarModal) {
   });
 }
 
-// Función global para abrir el modal desde cualquier tarjeta
 function abrirModalProducto(nombre, precio, imagen, stockRaw, descripcion) {
   if (!modalProducto) return;
 
@@ -194,7 +301,6 @@ function abrirModalProducto(nombre, precio, imagen, stockRaw, descripcion) {
   modalProducto.showModal();
 }
 
-// Cargar productos creados en Decap CMS desde archivos .md
 async function cargarProductosCMS() {
   const container = document.getElementById('lista-productos');
   if (!container) return;
@@ -282,5 +388,8 @@ async function cargarProductosCMS() {
   }
 }
 
-renderizarCarrito();
-document.addEventListener('DOMContentLoaded', cargarProductosCMS);
+document.addEventListener('DOMContentLoaded', () => {
+  renderizarCarrito();
+  verificarEstadoPago();
+  cargarProductosCMS();
+});

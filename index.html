@@ -34,7 +34,6 @@
             </div>
             <ul id="opciones-menu" hidden>
                 <li><a href="#productos">Productos</a></li>
-                <li><a href="#historia">Un poco de la marca</a></li>
             </ul>
         </nav>
     </header>
@@ -96,9 +95,19 @@
             </div>
             <p class="carrito-vacio" id="carrito-vacio">Todavía no agregaste productos.</p>
             <ul class="lista-carrito" id="lista-carrito"></ul>
-            <div class="pie-carrito">
-                <span>Total</span>
-                <strong id="total-carrito">$0</strong>
+           <div class="pie-carrito">
+                <div class="monto-total">
+                    <span>Total</span>
+                    <strong id="total-carrito">$0</strong>
+                </div>
+                <div class="acciones-carrito">
+                    <button class="btn-checkout btn-mercadopago" id="btn-comprar-mp" type="button">
+                            Pagar con Mercado Pago
+                    </button>
+                    <button class="btn-checkout btn-efectivo" id="btn-comprar-efectivo" type="button">
+                            Pagar en Efectivo
+                    </button>
+                </div>
             </div>
         </div>
     </dialog>
