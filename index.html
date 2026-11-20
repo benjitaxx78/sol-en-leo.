@@ -97,15 +97,26 @@
             <ul class="lista-carrito" id="lista-carrito"></ul>
            <div class="pie-carrito">
                 <div class="monto-total">
-                    <span>Total</span>
+                    <span>Total a abonar</span>
                     <strong id="total-carrito">$0</strong>
                 </div>
+
+                <!-- Caja de datos bancarios para transferencia -->
+                <div class="caja-transferencia">
+                    <p class="titulo-transferencia">💳 Datos para Transferencia / CBU</p>
+                    <div class="datos-banco">
+                        <p><strong>Titular:</strong> <span id="datos-titular">Nombre y Apellido</span></p>
+                        <p><strong>Alias:</strong> <span id="datos-alias">SOL.EN.LEO.ALIAS</span></p>
+                        <p><strong>CVU / CBU:</strong> <span id="datos-cvu">0000003100000000000000</span></p>
+                    </div>
+                    <p class="aviso-comprobante">
+                        ⚠️ <strong>Importante:</strong> Realizá la transferencia por el total y tocá el botón de abajo para enviar tu pedido a WhatsApp <u>adjuntando el comprobante de pago</u>.
+                    </p>
+                </div>
+
                 <div class="acciones-carrito">
-                    <button class="btn-checkout btn-mercadopago" id="btn-comprar-mp" type="button">
-                            Pagar con Mercado Pago
-                    </button>
-                    <button class="btn-checkout btn-efectivo" id="btn-comprar-efectivo" type="button">
-                            Pagar en Efectivo
+                    <button class="btn-checkout btn-whatsapp-confirmar" id="btn-comprar-wa" type="button">
+                        Confirmar y enviar pedido por WhatsApp
                     </button>
                 </div>
             </div>

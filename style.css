@@ -574,6 +574,95 @@ body {
 .btn-efectivo:hover {
     background-color: #e4c8ba;
 }
+.pie-carrito {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(59, 12, 8, 0.15);
+}
+
+.monto-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* Caja destacada de transferencia */
+.caja-transferencia {
+    background-color: #fff2eb;
+    border: 2px dashed #b84c36;
+    border-radius: 12px;
+    padding: 14px;
+    color: #3b0c08;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.titulo-transferencia {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #8b0000;
+    margin-bottom: 2px;
+}
+
+.datos-banco p {
+    font-size: 0.85rem;
+    margin: 3px 0;
+    line-height: 1.4;
+}
+
+.datos-banco span {
+    font-family: monospace;
+    font-weight: 700;
+    background: #eae0d8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.aviso-comprobante {
+    font-size: 0.8rem;
+    color: #8b0000;
+    line-height: 1.35;
+    background: #ffe3e3;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+/* Botón principal de WhatsApp */
+.btn-whatsapp-confirmar {
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 10px;
+    background-color: #25d366;
+    color: #0b3b18;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.btn-whatsapp-confirmar:hover {
+    background-color: #20bd5a;
+}
+
+.btn-whatsapp-confirmar:active {
+    transform: scale(0.98);
+}
+
+.btn-whatsapp-confirmar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 @media (max-width: 600px) {
     body {
         gap: 16px;

@@ -47,8 +47,7 @@ const botonCerrarCarrito = modalCarrito ? modalCarrito.querySelector(".cerrar-ca
 const listaCarrito = modalCarrito ? modalCarrito.querySelector("#lista-carrito") : null;
 const carritoVacio = modalCarrito ? modalCarrito.querySelector("#carrito-vacio") : null;
 const totalCarrito = modalCarrito ? modalCarrito.querySelector("#total-carrito") : null;
-const btnComprarMP = modalCarrito ? modalCarrito.querySelector("#btn-comprar-mp") : null;
-const btnComprarEfectivo = modalCarrito ? modalCarrito.querySelector("#btn-comprar-efectivo") : null;
+const btnComprarWA = modalCarrito ? modalCarrito.querySelector("#btn-comprar-wa") : null;
 
 const formatoMoneda = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -124,8 +123,7 @@ function renderizarCarrito() {
   totalCarrito.textContent = formatearPrecio(precioTotal);
 
   const carritoTieneItems = cantidadTotal > 0;
-  if (btnComprarMP) btnComprarMP.disabled = !carritoTieneItems;
-  if (btnComprarEfectivo) btnComprarEfectivo.disabled = !carritoTieneItems;
+  if (btnComprarWA) btnComprarWA.disabled = !carritoTieneItems;
 
   guardarCarrito();
 }
@@ -173,12 +171,12 @@ if (listaCarrito) {
   });
 }
 
-// Acción: Pagar en Efectivo o Transferencia vía WhatsApp
-if (btnComprarEfectivo) {
-  btnComprarEfectivo.addEventListener("click", () => {
+// Envío de pedido a WhatsApp con aviso de comprobante
+if (btnComprarWA) {
+  btnComprarWA.addEventListener("click", () => {
     if (carrito.size === 0) return;
 
-    let mensaje = "¡Hola! Quiero hacer el siguiente pedido para pagar en *EFECTIVO / TRANSFERENCIA*:\n\n";
+    let mensaje = "¡Hola! Realicé la transferencia para el siguiente pedido en Sol en Leo:\n\n";
     let precioTotal = 0;
 
     for (const [_, prod] of carrito) {
@@ -187,83 +185,13 @@ if (btnComprarEfectivo) {
       mensaje += `• ${prod.cantidad}x ${prod.nombre} (${formatearPrecio(subtotal)})\n`;
     }
 
-    mensaje += `\n*Total a abonar: ${formatearPrecio(precioTotal)}*\n¿Cómo coordinamos el retiro o la entrega?`;
+    mensaje += `\n*Monto transferido: ${formatearPrecio(precioTotal)}*\n\n📌 Adjunto el comprobante de transferencia a este mensaje para coordinar el envío.`;
 
     const numeroTelefono = "5493425994955";
     const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
 
     window.open(urlWhatsApp, "_blank");
   });
-}
-
-// Acción: Pagar con Mercado Pago
-if (btnComprarMP) {
-  btnComprarMP.addEventListener("click", async () => {
-    if (carrito.size === 0) return;
-
-    btnComprarMP.disabled = true;
-    const textoOriginal = btnComprarMP.textContent;
-    btnComprarMP.textContent = "Cargando Mercado Pago...";
-
-    try {
-      const items = Array.from(carrito.values()).map((p) => ({
-        nombre: p.nombre,
-        precio: p.precio,
-        cantidad: p.cantidad,
-      }));
-
-      localStorage.setItem("sol_en_leo_orden_pendiente", JSON.stringify(items));
-
-      const res = await fetch("/.netlify/functions/create-preference", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "No se pudo iniciar el pago");
-
-      window.location.href = data.init_point;
-    } catch (err) {
-      alert(`Error al procesar el pago: ${err.message}`);
-      btnComprarMP.disabled = false;
-      btnComprarMP.textContent = textoOriginal;
-    }
-  });
-}
-
-// Verificar si el comprador regresa tras pagar exitosamente en Mercado Pago
-function verificarEstadoPago() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const estadoPago = urlParams.get("pago");
-
-  if (estadoPago === "exito") {
-    const ordenPendiente = JSON.parse(localStorage.getItem("sol_en_leo_orden_pendiente") || "[]");
-
-    carrito.clear();
-    localStorage.removeItem("sol_en_leo_carrito");
-    renderizarCarrito();
-
-    let mensajeWA = "Hola Buenas! pagué ";
-    let totalMonto = 0;
-    let listaProductosStr = "";
-
-    ordenPendiente.forEach((prod) => {
-      totalMonto += prod.precio * prod.cantidad;
-      listaProductosStr += `\n• ${prod.nombre}${prod.cantidad > 1 ? ` (x${prod.cantidad})` : ""}`;
-    });
-
-    mensajeWA += `${formatearPrecio(totalMonto)} por:${listaProductosStr}`;
-
-    const numeroTelefono = "5493425994955";
-    const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensajeWA)}`;
-
-    window.history.replaceState({}, document.title, window.location.pathname);
-    localStorage.removeItem("sol_en_leo_orden_pendiente");
-
-    alert("¡Pago aprobado con éxito! Te redirigimos a WhatsApp para coordinar el envío.");
-    window.location.href = urlWhatsApp;
-  }
 }
 
 if (modalProducto && botonCerrarModal) {
@@ -390,6 +318,5 @@ async function cargarProductosCMS() {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderizarCarrito();
-  verificarEstadoPago();
   cargarProductosCMS();
 });
