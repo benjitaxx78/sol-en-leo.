@@ -73,7 +73,7 @@ header {
 .boton-carrito {
     position: fixed;
     right: 24px;
-    bottom: 24px;
+    bottom: 90px;
     z-index: 10001;
     width: 58px;
     height: 58px;
